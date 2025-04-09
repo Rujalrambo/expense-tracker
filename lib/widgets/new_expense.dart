@@ -11,10 +11,24 @@ class NewExpense extends StatefulWidget {
 
 class _NewExpenseState extends State<NewExpense> {
   final _titleController = TextEditingController();
+  final _amountController = TextEditingController();
+
+  void _presentDatePicker() {
+    final now = DateTime.now();
+    final firstDate = DateTime(now.year - 1, now.month, now.day);
+    // final lastDate = DateTime(now.year + 1, now.month, now.day);
+    showDatePicker(
+      context: context,
+      initialDate: now,
+      firstDate: firstDate,
+      lastDate: now,
+    );
+  }
 
   @override
   void dispose() {
     _titleController.dispose();
+    _amountController.dispose();
     super.dispose();
   }
 
@@ -31,13 +45,49 @@ class _NewExpenseState extends State<NewExpense> {
           ),
           Row(
             children: [
+              Expanded(
+                child: TextField(
+                  controller: _amountController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    prefixText: '\$',
+                    label: Text('Amount'),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text('Selected Date'),
+                    IconButton(
+                      onPressed: _presentDatePicker,
+                      icon: Icon(Icons.calendar_today),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
+          Row(
+            children: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('Cancel'),
+              ),
+              const SizedBox(width: 8),
               ElevatedButton(
                 onPressed: () {
                   print(_titleController.text);
+                  print(_amountController.text);
                 },
                 child: Text('Save Expense'),
               ),
-              const SizedBox(width: 10),
             ],
           ),
         ],
